@@ -1,6 +1,6 @@
 Flask==3.0.0
 fuzzywuzzy==0.18.0
-rapidfuzz==3.14.0
-googletrans==4.0.0-rc1
-python-dotenv==1.0.0
+python-dotenv
 twilio==8.10.0
+googletrans==4.0.0-rc1
+rapidfuzz
