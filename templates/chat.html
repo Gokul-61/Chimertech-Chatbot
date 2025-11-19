@@ -765,7 +765,13 @@
 
       synthesis.cancel();
 
-      const cleanText = text.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+      // Remove HTML + remove emojis
+      const cleanText = text
+        .replace(/<[^>]*>/g, ' ')        // remove HTML tags
+        .replace(/\p{Emoji}/gu, '')      // remove emojis
+        .replace(/\s+/g, ' ')            // clean spacing
+        .trim();
+
       
       if (!cleanText) return;
 
