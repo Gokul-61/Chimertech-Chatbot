@@ -303,6 +303,10 @@
       animation: pulse 1.5s infinite;
     }
 
+    .speaker-btn.paused {
+      background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+    }
+
     .typing-indicator {
       display: none;
       padding: 10px 14px;
@@ -653,6 +657,7 @@
     let currentLanguage = "en";
     let isListening = false;
     let autoSpeak = true;
+    let isPaused = false;
     let recognition = null;
     let synthesis = window.speechSynthesis;
     let currentUtterance = null;
@@ -681,6 +686,7 @@
         recognition = new SpeechRecognition();
         recognition.continuous = false;
         recognition.interimResults = false;
+        recognition.lang = voiceLanguages[currentLanguage];
         
         recognition.onstart = () => {
           isListening = true;
@@ -741,66 +747,129 @@
     }
 
     function toggleAutoSpeak() {
+      // If currently speaking, stop it
+      if (synthesis.speaking) {
+        synthesis.cancel();
+        isPaused = false;
+        speakerBtn.classList.remove('speaking', 'paused');
+      }
+      
+      // Toggle auto-speak on/off
       autoSpeak = !autoSpeak;
       speakerBtn.style.opacity = autoSpeak ? '1' : '0.5';
+      speakerBtn.textContent = autoSpeak ? '🔊' : '🔇';
       
       const statusMsg = autoSpeak ? 
-        (currentLanguage === 'ta' ? '🔊 தானாக பேசுதல் இயக்கப்பட்டது' : 
-         currentLanguage === 'hi' ? '🔊 ऑटो-स्पीक चालू' : 
-         '🔊 Auto-speak enabled') :
-        (currentLanguage === 'ta' ? '🔇 தானாக பேசுதல் நிறுத்தப்பட்டது' : 
-         currentLanguage === 'hi' ? '🔇 ऑटो-स्पीक बंद' : 
-         '🔇 Auto-speak disabled');
+        (currentLanguage === 'ta' ? 'தானாக பேசுதல் இயக்கப்பட்டது' : 
+         currentLanguage === 'hi' ? 'ऑटो-स्पीक चालू' : 
+         'Auto-speak enabled') :
+        (currentLanguage === 'ta' ? 'தானாக பேசுதல் நிறுத்தப்பட்டது' : 
+         currentLanguage === 'hi' ? 'ऑटो-स्पीक बंद' : 
+         'Auto-speak disabled');
       
       chat.innerHTML += `<div class="message bot">${statusMsg}</div>`;
       chat.scrollTop = chat.scrollHeight;
-      
-      if (!autoSpeak && synthesis.speaking) {
-        synthesis.cancel();
-      }
     }
 
     function speakText(text) {
       if (!autoSpeak || !synthesis) return;
 
+      // Cancel any ongoing speech
       synthesis.cancel();
 
-      // Remove HTML + remove emojis
-      const cleanText = text
-        .replace(/<[^>]*>/g, ' ')        // remove HTML tags
-        .replace(/\p{Emoji}/gu, '')      // remove emojis
-        .replace(/\s+/g, ' ')            // clean spacing
+      // Comprehensive text cleaning
+      let cleanText = text
+        // Remove all HTML tags and their content
+        .replace(/<style[^>]*>.*?<\/style>/gi, '')
+        .replace(/<script[^>]*>.*?<\/script>/gi, '')
+        .replace(/<[^>]+>/g, ' ')
+        // Remove ALL emojis and symbols (more comprehensive)
+        .replace(/[\u{1F000}-\u{1FFFF}]/gu, '') // All emoji ranges
+        .replace(/[\u{2600}-\u{27BF}]/gu, '')   // Misc symbols
+        .replace(/[\u{2300}-\u{23FF}]/gu, '')   // Misc Technical
+        .replace(/[\u{2B00}-\u{2BFF}]/gu, '')   // Misc Symbols and Arrows
+        .replace(/[\u{FE00}-\u{FE0F}]/gu, '')   // Variation Selectors
+        .replace(/[\u{200D}]/gu, '')            // Zero Width Joiner
+        // Remove common emoji characters that might slip through
+        .replace(/[👋🌱💡🎤🔊🔇⚠️📦📝🖼️🔍❌✓✔✗✘]/g, '')
+        // Remove special characters and symbols
+        .replace(/[©®™×±§¶†‡•‣℃℉€£¥]/g, '')
+        // Replace multiple dots with single period
+        .replace(/\.{2,}/g, '.')
+        // Replace line breaks with periods for better speech flow
+        .replace(/<br\s*\/?>/gi, '. ')
+        .replace(/\n+/g, '. ')
+        // Clean up punctuation spacing
+        .replace(/\s*([.,!?;:])\s*/g, '$1 ')
+        // Remove multiple spaces
+        .replace(/\s+/g, ' ')
         .trim();
 
-      
-      if (!cleanText) return;
+      // Remove empty sentences
+      cleanText = cleanText
+        .split('.')
+        .filter(s => s.trim().length > 0)
+        .join('. ')
+        .trim();
 
+      // Add final period if missing
+      if (cleanText && !cleanText.match(/[.!?]$/)) {
+        cleanText += '.';
+      }
+
+      if (!cleanText || cleanText.length < 2) return;
+
+      // Create utterance with better settings
       currentUtterance = new SpeechSynthesisUtterance(cleanText);
       currentUtterance.lang = voiceLanguages[currentLanguage];
-      currentUtterance.rate = 0.9;
+      
+      // Set consistent rate for all languages
+      currentUtterance.rate = 0.95;
       currentUtterance.pitch = 1;
+      currentUtterance.volume = 1;
       
       currentUtterance.onstart = () => {
         speakerBtn.classList.add('speaking');
+        speakerBtn.classList.remove('paused');
+        speakerBtn.textContent = '🔊';
+        isPaused = false;
       };
       
       currentUtterance.onend = () => {
-        speakerBtn.classList.remove('speaking');
+        speakerBtn.classList.remove('speaking', 'paused');
+        speakerBtn.textContent = '🔊';
+        isPaused = false;
       };
       
       currentUtterance.onerror = (event) => {
         console.error('Speech synthesis error:', event.error);
-        speakerBtn.classList.remove('speaking');
+        speakerBtn.classList.remove('speaking', 'paused');
+        speakerBtn.textContent = '🔊';
+        isPaused = false;
       };
 
+      // Find best voice for the language
       const voices = synthesis.getVoices();
       const langCode = voiceLanguages[currentLanguage];
-      const voice = voices.find(v => v.lang.startsWith(langCode.split('-')[0]));
+      
+      // Try to find exact language match first
+      let voice = voices.find(v => v.lang === langCode);
+      
+      // If not found, try language prefix match
+      if (!voice) {
+        const langPrefix = langCode.split('-')[0];
+        voice = voices.find(v => v.lang.startsWith(langPrefix));
+      }
+      
+      // Prefer native/local voices
       if (voice) {
         currentUtterance.voice = voice;
       }
 
-      synthesis.speak(currentUtterance);
+      // Small delay to ensure previous speech is fully cancelled
+      setTimeout(() => {
+        synthesis.speak(currentUtterance);
+      }, 100);
     }
 
     input.addEventListener('keypress', (e) => {
@@ -816,18 +885,56 @@
       headerSubtitle.textContent = greetings[lang];
       input.placeholder = placeholders[lang];
       
-      const langNames = {en: 'English', ta: 'Tamil (தமிழ்)', hi: 'Hindi (हिंदी)'};
-      const message = `🌐 Language switched to ${langNames[lang]}!`;
+      // Update speech recognition language if it exists
+      if (recognition) {
+        recognition.lang = voiceLanguages[lang];
+      }
+      
+      // Messages in respective languages (both display and speech)
+      const messages = {
+        en: '🌐 Language switched to English!',
+        ta: '🌐 மொழி தமிழுக்கு மாற்றப்பட்டது!',
+        hi: '🌐 भाषा हिंदी में बदल गई!'
+      };
+      
+      const message = messages[lang];
+      
       chat.innerHTML += `<div class="message bot">${message}</div>`;
       chat.scrollTop = chat.scrollHeight;
       
       speakText(message);
+      
+      // Save preference
+      if (window.localStorage) {
+        window.localStorage.setItem('preferredLanguage', lang);
+      }
+      
       input.focus();
     }
 
     async function sendMessage(customMessage = null) {
       const msg = customMessage || input.value.trim();
       if (!msg) return;
+
+      // Check if user is trying to switch language via text
+      const msgLower = msg.toLowerCase();
+      if (!customMessage) { // Only check for text-based language switching if not a custom message
+        if (msgLower === 'tamil' || msgLower === 'தமிழ்') {
+          switchLanguage('ta');
+          input.value = '';
+          return;
+        }
+        if (msgLower === 'hindi' || msgLower === 'हिंदी' || msgLower === 'हिन्दी') {
+          switchLanguage('hi');
+          input.value = '';
+          return;
+        }
+        if (msgLower === 'english') {
+          switchLanguage('en');
+          input.value = '';
+          return;
+        }
+      }
 
       input.disabled = true;
       sendBtn.disabled = true;
@@ -854,11 +961,31 @@
           document.getElementById(`lang-${data.language}`).classList.add('active');
           headerSubtitle.textContent = greetings[data.language];
           input.placeholder = placeholders[data.language];
+          
+          // Update speech recognition language
+          if (recognition) {
+            recognition.lang = voiceLanguages[data.language];
+          }
+          
+          // Save preference
+          if (window.localStorage) {
+            window.localStorage.setItem('preferredLanguage', data.language);
+          }
         }
 
         if (data.type === 'product') {
           displayProduct(data);
-          speakText(`${data.name}. ${data.description}`);
+          // Create a clean speech text for products without any special characters
+          const productIntro = currentLanguage === 'ta' ? 'தயாரிப்பு தகவல்' :
+                              currentLanguage === 'hi' ? 'उत्पाद की जानकारी' :
+                              'Product information';
+          const nameLabel = currentLanguage === 'ta' ? 'பெயர்' :
+                           currentLanguage === 'hi' ? 'नाम' :
+                           'Name';
+          const descLabel = currentLanguage === 'ta' ? 'விளக்கம்' :
+                           currentLanguage === 'hi' ? 'विवरण' :
+                           'Description';
+          speakText(`${productIntro}. ${nameLabel}: ${data.name}. ${descLabel}: ${data.description}`);
         } else if (data.type === 'suggestions') {
           displaySuggestions(data);
           speakText(data.message);
@@ -981,19 +1108,29 @@
     }
 
     window.onload = () => {
-      input.focus();
-      initSpeechRecognition();
-      
+      // Load voices first (important for some browsers)
       if (synthesis) {
         synthesis.onvoiceschanged = () => {
           synthesis.getVoices();
         };
+        // Force initial voice load
+        synthesis.getVoices();
       }
       
+      // Load saved language preference before initializing speech recognition
       const savedLang = window.localStorage?.getItem('preferredLanguage');
       if (savedLang && ['en', 'ta', 'hi'].includes(savedLang)) {
-        switchLanguage(savedLang);
+        currentLanguage = savedLang;
+        document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(`lang-${savedLang}`).classList.add('active');
+        headerSubtitle.textContent = greetings[savedLang];
+        input.placeholder = placeholders[savedLang];
       }
+      
+      // Initialize speech recognition with correct language
+      initSpeechRecognition();
+      
+      input.focus();
     };
 
     window.addEventListener('beforeunload', () => {
@@ -1007,4 +1144,3 @@
   </script>
 </body>
 </html>
-        
