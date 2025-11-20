@@ -5,67 +5,122 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>🌱 ChimerTech Agricultural Assistant</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * { 
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box; 
+    }
+
+    :root {
+      --primary: #16a34a;
+      --primary-dark: #15803d;
+      --primary-light: #22c55e;
+      --secondary: #059669;
+      --accent: #10b981;
+      --bg-main: #f0fdf4;
+      --bg-card: #ffffff;
+      --text-primary: #1e293b;
+      --text-secondary: #64748b;
+      --text-light: #94a3b8;
+      --border: #e2e8f0;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+      --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.12);
+      --shadow-green: 0 4px 20px rgba(22, 163, 74, 0.15);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
 
     body {
-      background: #f8faf9;
-      color: #2c3e50;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+      color: var(--text-primary);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
       min-height: 100vh;
-      padding: 10px;
-      overflow-x: hidden;
-    }
-
-    .container {
-      max-width: 1000px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      height: calc(100vh - 20px);
-    }
-
-    .header {
-      text-align: center;
       padding: 16px;
-      background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
-      border-radius: 12px;
-      margin-bottom: 12px;
-      box-shadow: 0 4px 12px rgba(46, 204, 113, 0.15);
-      color: white;
+      overflow-x: hidden;
       position: relative;
     }
 
-    .header h1 {
-      font-size: 1.4em;
-      font-weight: 700;
-      margin-bottom: 6px;
-      margin-top: 8px;
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 20% 50%, rgba(22, 163, 74, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
     }
 
-    .header p {
-      font-size: 0.9em;
-      color: rgba(255, 255, 255, 0.9);
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 32px);
+      position: relative;
+      z-index: 1;
+    }
+
+    .header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow-green), var(--shadow-lg);
+      color: white;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+    }
+
+    .header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -10%;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .header-content {
+      position: relative;
+      z-index: 2;
     }
 
     .language-selector {
       display: flex;
-      gap: 6px;
+      gap: 8px;
       justify-content: center;
-      margin-bottom: 12px;
+      margin-bottom: 16px;
       flex-wrap: wrap;
     }
 
     .lang-btn {
-      padding: 6px 12px;
-      background: rgba(255, 255, 255, 0.2);
-      border: 2px solid rgba(255, 255, 255, 0.3);
-      border-radius: 8px;
+      padding: 8px 16px;
+      background: rgba(255, 255, 255, 0.15);
+      border: 2px solid rgba(255, 255, 255, 0.25);
+      border-radius: var(--radius-sm);
       color: white;
       font-weight: 600;
+      font-size: 0.9rem;
       cursor: pointer;
-      transition: all 0.3s;
-      font-size: 0.85em;
+      transition: var(--transition);
       -webkit-tap-highlight-color: transparent;
+      backdrop-filter: blur(10px);
+    }
+
+    .lang-btn:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(-2px);
     }
 
     .lang-btn:active {
@@ -74,72 +129,136 @@
 
     .lang-btn.active {
       background: white;
-      color: #27ae60;
+      color: var(--primary);
       border-color: white;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .header h1 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+      margin-top: 0;
+      text-align: center;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      letter-spacing: -0.5px;
+      line-height: 1.3;
+    }
+
+    .header p {
+      font-size: 1rem;
+      color: rgba(255, 255, 255, 0.95);
+      text-align: center;
+      font-weight: 500;
     }
 
     .chatbox {
       flex: 1;
-      background: #ffffff;
-      padding: 12px;
-      border-radius: 12px;
+      background: var(--bg-card);
+      padding: 20px;
+      border-radius: var(--radius-lg);
       overflow-y: auto;
       overflow-x: hidden;
-      margin-bottom: 12px;
-      border: 1px solid #e8ebe9;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      margin-bottom: 16px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-md);
       -webkit-overflow-scrolling: touch;
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.95);
+    }
+
+    .chatbox::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .chatbox::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .chatbox::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 3px;
+    }
+
+    .chatbox::-webkit-scrollbar-thumb:hover {
+      background: var(--text-light);
     }
 
     .message {
-      margin: 10px 0;
-      padding: 10px 14px;
-      border-radius: 12px;
+      margin: 16px 0;
+      padding: 14px 18px;
+      border-radius: var(--radius-md);
       max-width: 85%;
-      animation: fadeIn 0.3s ease;
+      animation: messageSlide 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
       word-wrap: break-word;
-      font-size: 0.95em;
-      line-height: 1.5;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      position: relative;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+    @keyframes messageSlide {
+      from { 
+        opacity: 0; 
+        transform: translateY(20px) scale(0.95);
+      }
+      to { 
+        opacity: 1; 
+        transform: translateY(0) scale(1);
+      }
     }
 
     .user {
-      background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
       margin-left: auto;
       text-align: right;
       color: white;
       font-weight: 500;
-      box-shadow: 0 4px 6px rgba(46, 204, 113, 0.25);
+      box-shadow: var(--shadow-green);
+      border-bottom-right-radius: 4px;
     }
 
     .bot {
-      background: #f7f9f8;
-      border-left: 3px solid #2ecc71;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-      color: #2c3e50;
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      border-left: 4px solid var(--primary);
+      box-shadow: var(--shadow-sm);
+      color: var(--text-primary);
       max-width: 90%;
+      border-bottom-left-radius: 4px;
     }
 
     .product-card {
-      background: #ffffff;
-      border-left: 3px solid #2ecc71;
-      border-radius: 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
       padding: 0;
-      margin: 12px 0;
+      margin: 20px 0;
       max-width: 95%;
-      animation: fadeIn 0.3s ease;
+      animation: cardPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
       overflow: hidden;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      box-shadow: var(--shadow-lg);
+      transition: var(--transition);
+    }
+
+    .product-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg), 0 15px 35px rgba(0, 0, 0, 0.1);
+    }
+
+    @keyframes cardPop {
+      from {
+        opacity: 0;
+        transform: scale(0.9) translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
     }
 
     .product-section {
-      padding: 12px 14px;
-      border-bottom: 1px solid #ecf0ef;
-      animation: slideIn 0.4s ease forwards;
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+      animation: sectionFade 0.6s ease forwards;
       opacity: 0;
     }
 
@@ -147,31 +266,43 @@
       border-bottom: none;
     }
 
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateX(-20px); }
-      to { opacity: 1; transform: translateX(0); }
+    .product-section:nth-child(1) { animation-delay: 0.1s; }
+    .product-section:nth-child(2) { animation-delay: 0.2s; }
+    .product-section:nth-child(3) { animation-delay: 0.3s; }
+
+    @keyframes sectionFade {
+      to {
+        opacity: 1;
+      }
     }
 
     .product-label {
-      color: #27ae60;
-      font-size: 0.8em;
+      display: inline-block;
+      font-size: 0.75rem;
       font-weight: 700;
+      color: var(--text-secondary);
       text-transform: uppercase;
-      margin-bottom: 6px;
-      display: block;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+      padding: 4px 12px;
+      background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+      border-radius: var(--radius-sm);
     }
 
     .product-name {
-      font-size: 1.2em;
-      font-weight: 700;
-      color: #1e3a2e;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin-top: 8px;
+      line-height: 1.3;
       word-break: break-word;
     }
 
     .product-description {
-      line-height: 1.6;
-      color: #34495e;
-      font-size: 0.95em;
+      color: var(--text-primary);
+      line-height: 1.7;
+      margin-top: 8px;
+      font-size: 0.95rem;
     }
 
     .product-image {
@@ -179,95 +310,257 @@
       max-height: 250px;
       object-fit: contain;
       background: #fafbfa;
-      border-top: 1px solid #ecf0ef;
+      border-top: 1px solid var(--border);
       padding: 12px;
     }
 
     .suggestions-container {
-      background: white;
-      border-left: 3px solid #2ecc71;
-      border-radius: 12px;
-      padding: 12px;
-      margin: 12px 0;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      margin: 20px 0;
       max-width: 95%;
-      animation: fadeIn 0.3s ease;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      box-shadow: var(--shadow-lg);
+      animation: cardPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     .suggestions-header {
-      color: #27ae60;
       font-weight: 700;
-      margin-bottom: 10px;
-      font-size: 1em;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+      font-size: 1rem;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--border);
     }
 
     .suggestion-item {
-      background: #f7fdf9;
-      border: 1px solid #d5e8dd;
-      border-radius: 8px;
-      padding: 10px 12px;
+      padding: 16px 20px;
       margin: 8px 0;
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
       cursor: pointer;
-      transition: all 0.3s ease;
-      -webkit-tap-highlight-color: transparent;
-      font-size: 0.95em;
+      transition: var(--transition);
+      font-weight: 500;
+      color: var(--text-primary);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .suggestion-item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 4px;
+      background: var(--primary);
+      transform: scaleY(0);
+      transition: var(--transition);
+    }
+
+    .suggestion-item:hover {
+      background: linear-gradient(135deg, var(--primary-light) 0%, var(--accent) 100%);
+      color: white;
+      border-color: var(--primary);
+      transform: translateX(8px);
+      box-shadow: var(--shadow-green);
+    }
+
+    .suggestion-item:hover::before {
+      transform: scaleY(1);
     }
 
     .suggestion-item:active {
-      transform: scale(0.98);
+      transform: translateX(4px) scale(0.98);
     }
 
     .suggestion-original {
-      font-size: 0.75em;
-      color: #7f8c8d;
+      font-size: 0.85rem;
+      color: var(--text-light);
       margin-top: 4px;
       font-style: italic;
       opacity: 0.8;
     }
 
+    .suggestion-item:hover .suggestion-original {
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .typing-indicator {
+      display: none;
+      padding: 14px 18px;
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      border-left: 4px solid var(--primary);
+      border-radius: var(--radius-md);
+      max-width: 80px;
+      margin: 16px 0;
+      box-shadow: var(--shadow-sm);
+      animation: messageSlide 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .typing-indicator span {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      margin: 0 2px;
+      background: var(--primary);
+      border-radius: 50%;
+      animation: typingBounce 1.4s infinite ease-in-out;
+    }
+
+    .typing-indicator span:nth-child(1) { animation-delay: 0s; }
+    .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typingBounce {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.7; }
+      30% { transform: translateY(-10px); opacity: 1; }
+    }
+
+    .voice-status {
+      position: fixed;
+      bottom: 140px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: white;
+      padding: 16px 28px;
+      border-radius: 50px;
+      display: none;
+      z-index: 1000;
+      font-weight: 600;
+      font-size: 1rem;
+      box-shadow: var(--shadow-green), var(--shadow-lg);
+      animation: statusPulse 2s infinite;
+      white-space: nowrap;
+      max-width: 90%;
+    }
+
+    .voice-status.active {
+      display: block;
+    }
+
+    @keyframes statusPulse {
+      0%, 100% { transform: translateX(-50%) scale(1); }
+      50% { transform: translateX(-50%) scale(1.05); }
+    }
+
     .input-container {
       display: flex;
-      gap: 6px;
-      background: white;
-      padding: 10px;
-      border-radius: 12px;
-      border: 1px solid #e8ebe9;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      gap: 12px;
+      background: var(--bg-card);
+      padding: 16px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.95);
       flex-wrap: nowrap;
+    }
+
+    .voice-btn, .speaker-btn {
+      padding: 14px 18px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: white;
+      border: none;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: var(--transition);
+      font-size: 1.3rem;
+      min-width: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-green);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .speaker-btn {
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      box-shadow: 0 4px 20px rgba(59, 130, 246, 0.15);
+    }
+
+    .voice-btn:hover, .speaker-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-green), 0 8px 25px rgba(22, 163, 74, 0.2);
+    }
+
+    .speaker-btn:hover {
+      box-shadow: 0 4px 20px rgba(59, 130, 246, 0.15), 0 8px 25px rgba(59, 130, 246, 0.2);
+    }
+
+    .voice-btn:active, .speaker-btn:active {
+      transform: scale(0.95);
+    }
+
+    .voice-btn.listening {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      animation: voicePulse 1.5s infinite;
+    }
+
+    @keyframes voicePulse {
+      0%, 100% { box-shadow: 0 4px 20px rgba(239, 68, 68, 0.3); }
+      50% { box-shadow: 0 4px 30px rgba(239, 68, 68, 0.6); }
+    }
+
+    .speaker-btn.speaking {
+      animation: voicePulse 1.5s infinite;
+    }
+
+    .speaker-btn.paused {
+      background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+    }
+
+    .voice-btn:disabled, .speaker-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
     }
 
     input {
       flex: 1;
-      padding: 10px 12px;
-      border: 2px solid #e8ebe9;
-      border-radius: 8px;
-      background: #fafbfa;
-      color: #2c3e50;
-      font-size: 0.95em;
-      transition: all 0.3s;
+      padding: 14px 20px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
+      font-size: 1rem;
+      transition: var(--transition);
+      font-family: inherit;
+      background: white;
+      color: var(--text-primary);
       min-width: 0;
     }
 
     input:focus {
       outline: none;
-      border-color: #2ecc71;
-      background: white;
-      box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.1);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.1);
+    }
+
+    input::placeholder {
+      color: var(--text-light);
     }
 
     button {
-      padding: 10px 16px;
-      background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
-      border: none;
-      border-radius: 8px;
+      padding: 14px 28px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
       color: white;
-      font-weight: 600;
+      border: none;
+      border-radius: var(--radius-md);
       cursor: pointer;
-      transition: all 0.3s;
-      box-shadow: 0 4px 8px rgba(46, 204, 113, 0.25);
-      font-size: 0.9em;
+      transition: var(--transition);
+      font-weight: 600;
+      font-size: 1rem;
+      box-shadow: var(--shadow-green);
+      font-family: inherit;
       -webkit-tap-highlight-color: transparent;
       white-space: nowrap;
+    }
+
+    button:hover:not(:disabled) {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-green), 0 8px 25px rgba(22, 163, 74, 0.2);
     }
 
     button:active:not(:disabled) {
@@ -277,123 +570,7 @@
     button:disabled {
       opacity: 0.6;
       cursor: not-allowed;
-    }
-
-    .voice-btn, .speaker-btn {
-      padding: 10px 12px;
-      min-width: 44px;
-      font-size: 1.1em;
-    }
-
-    .voice-btn.listening {
-      background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-      animation: pulse 1.5s infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.7; }
-    }
-
-    .speaker-btn {
-      background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
-    }
-
-    .speaker-btn.speaking {
-      animation: pulse 1.5s infinite;
-    }
-
-    .speaker-btn.paused {
-      background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
-    }
-
-    .typing-indicator {
-      display: none;
-      padding: 10px 14px;
-      background: #f7f9f8;
-      border-left: 3px solid #2ecc71;
-      border-radius: 12px;
-      max-width: 70px;
-      margin: 10px 0;
-    }
-
-    .typing-indicator span {
-      display: inline-block;
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: #27ae60;
-      margin: 0 2px;
-      animation: bounce 1.4s infinite;
-    }
-
-    .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
-    .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
-
-    @keyframes bounce {
-      0%, 60%, 100% { transform: translateY(0); }
-      30% { transform: translateY(-8px); }
-    }
-
-    .voice-status {
-      position: fixed;
-      bottom: 100px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(231, 76, 60, 0.95);
-      color: white;
-      padding: 10px 20px;
-      border-radius: 12px;
-      font-weight: 600;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      display: none;
-      animation: slideUp 0.3s ease;
-      z-index: 1000;
-      font-size: 0.9em;
-      white-space: nowrap;
-      max-width: 90%;
-    }
-
-    @keyframes slideUp {
-      from { transform: translateX(-50%) translateY(20px); opacity: 0; }
-      to { transform: translateX(-50%) translateY(0); opacity: 1; }
-    }
-
-    .voice-status.active {
-      display: block;
-    }
-
-    /* Tablet styles */
-    @media (min-width: 481px) and (max-width: 768px) {
-      .container {
-        height: calc(100vh - 30px);
-      }
-
-      .header h1 {
-        font-size: 1.6em;
-      }
-
-      .header p {
-        font-size: 1em;
-      }
-
-      .message {
-        font-size: 1em;
-      }
-
-      .input-container {
-        padding: 12px;
-      }
-
-      input {
-        font-size: 1em;
-        padding: 12px 14px;
-      }
-
-      button {
-        padding: 12px 18px;
-        font-size: 0.95em;
-      }
+      transform: none;
     }
 
     /* Desktop styles */
@@ -407,12 +584,12 @@
       }
 
       .header {
-        padding: 24px;
-        padding-top: 70px;
+        padding: 20px 24px 24px 24px;
       }
 
       .header h1 {
         font-size: 2em;
+        margin-top: 8px;
       }
 
       .header p {
@@ -420,45 +597,30 @@
       }
 
       .language-selector {
-        position: absolute;
-        top: 16px;
-        right: 20px;
-        justify-content: flex-end;
-        margin-bottom: 0;
-      }
+  position: relative;
+  top: 0;
+  right: 0;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
 
       .lang-btn {
         padding: 8px 16px;
         font-size: 0.9em;
       }
 
-      .lang-btn:hover {
-        background: rgba(255, 255, 255, 0.3);
-        transform: translateY(-2px);
-      }
-
       .chatbox {
         padding: 20px;
-        margin-bottom: 15px;
       }
 
       .message {
-        margin: 15px 0;
-        padding: 14px 18px;
-        font-size: 1em;
+        font-size: 1rem;
         max-width: 80%;
       }
 
-      .product-card {
-        max-width: 90%;
-      }
-
-      .product-section {
-        padding: 16px 20px;
-      }
-
       .product-name {
-        font-size: 1.4em;
+        font-size: 1.6rem;
       }
 
       .product-image {
@@ -466,138 +628,158 @@
         padding: 16px;
       }
 
-      .suggestions-container {
+      .voice-status {
+        bottom: 120px;
+      }
+    }
+
+    /* Tablet and mobile adjustments */
+    @media (max-width: 768px) {
+      body {
+        padding: 12px;
+      }
+
+      .container {
+        height: calc(100vh - 24px);
+      }
+
+      .header {
         padding: 16px;
+      }
+
+      .language-selector {
+        margin-bottom: 16px;
+      }
+
+      .header h1 {
+        font-size: 1.35rem;
+        margin-top: 0;
+      }
+
+      .header p {
+        font-size: 0.85rem;
+      }
+
+      .chatbox {
+        padding: 16px;
+      }
+
+      .message {
+        font-size: 0.9rem;
         max-width: 90%;
       }
 
-      .suggestions-header {
-        font-size: 1.1em;
+      .product-name {
+        font-size: 1.3rem;
       }
 
-      .suggestion-item {
-        padding: 10px 14px;
-      }
-
-      .suggestion-item:hover {
-        background: #2ecc71;
-        color: white;
-        border-color: #2ecc71;
-        transform: translateX(5px);
-        box-shadow: 0 4px 10px rgba(46, 204, 113, 0.25);
-      }
-
-      .suggestion-item:hover .suggestion-original {
-        color: rgba(255, 255, 255, 0.9);
-      }
-
-      .input-container {
-        padding: 15px;
-        gap: 10px;
-      }
-
-      input {
-        padding: 12px 16px;
-        font-size: 1em;
+      .product-section {
+        padding: 16px;
       }
 
       button {
         padding: 12px 24px;
-        font-size: 1em;
-      }
-
-      button:hover:not(:disabled) {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 14px rgba(46, 204, 113, 0.3);
+        font-size: 0.95rem;
       }
 
       .voice-btn, .speaker-btn {
         padding: 12px 16px;
-        min-width: 60px;
-      }
-
-      .speaker-btn:hover:not(:disabled) {
-        box-shadow: 0 6px 14px rgba(52, 152, 219, 0.3);
+        min-width: 52px;
+        font-size: 1.2rem;
       }
 
       .voice-status {
         bottom: 120px;
-        font-size: 1em;
+        font-size: 0.9rem;
+        padding: 14px 24px;
       }
     }
 
-    /* Small mobile optimization */
-    @media (max-width: 380px) {
+    @media (max-width: 480px) {
+      .header {
+        padding: 14px;
+      }
+
+      .language-selector {
+        margin-bottom: 14px;
+        gap: 6px;
+      }
+
       .header h1 {
-        font-size: 1.2em;
+        font-size: 1.2rem;
+        margin-top: 0;
       }
 
       .header p {
-        font-size: 0.85em;
+        font-size: 0.8rem;
       }
 
       .lang-btn {
-        padding: 5px 10px;
-        font-size: 0.8em;
+        padding: 6px 12px;
+        font-size: 0.85rem;
       }
 
       .message {
-        font-size: 0.9em;
-        padding: 8px 12px;
+        font-size: 0.85rem;
+        padding: 12px 14px;
       }
 
       .product-name {
-        font-size: 1.1em;
+        font-size: 1.2rem;
       }
 
       button {
-        padding: 8px 12px;
-        font-size: 0.85em;
+        padding: 10px 20px;
+        font-size: 0.9rem;
       }
 
       .voice-btn, .speaker-btn {
-        padding: 8px 10px;
-        min-width: 40px;
-        font-size: 1em;
+        padding: 10px 14px;
+        min-width: 48px;
+        font-size: 1.1rem;
       }
 
       input {
-        font-size: 0.9em;
+        font-size: 0.9rem;
+        padding: 12px 16px;
+      }
+
+      .product-section {
+        padding: 14px;
       }
     }
 
-    /* Landscape mobile */
-    @media (max-height: 500px) and (orientation: landscape) {
+    @media (max-height: 600px) and (orientation: landscape) {
       .container {
         height: auto;
         min-height: 100vh;
       }
 
       .header {
-        padding: 10px;
-        margin-bottom: 8px;
+        padding: 12px;
+        margin-bottom: 10px;
       }
 
       .header h1 {
-        font-size: 1.2em;
+        font-size: 1.2rem;
         margin-bottom: 4px;
       }
 
       .header p {
-        font-size: 0.85em;
+        font-size: 0.8rem;
       }
 
       .language-selector {
-        margin-bottom: 8px;
+        margin-bottom: 10px;
       }
 
       .chatbox {
-        max-height: 40vh;
-        margin-bottom: 8px;
+        max-height: 50vh;
+        margin-bottom: 10px;
       }
 
       .voice-status {
-        bottom: 80px;
+        bottom: 90px;
       }
     }
   </style>
@@ -605,13 +787,15 @@
 <body>
   <div class="container">
     <div class="header">
-      <div class="language-selector">
-        <button class="lang-btn active" onclick="switchLanguage('en')" id="lang-en">English</button>
-        <button class="lang-btn" onclick="switchLanguage('ta')" id="lang-ta">தமிழ்</button>
-        <button class="lang-btn" onclick="switchLanguage('hi')" id="lang-hi">हिंदी</button>
+      <div class="header-content">
+        <div class="language-selector">
+          <button class="lang-btn active" onclick="switchLanguage('en')" id="lang-en">English</button>
+          <button class="lang-btn" onclick="switchLanguage('ta')" id="lang-ta">தமிழ்</button>
+          <button class="lang-btn" onclick="switchLanguage('hi')" id="lang-hi">हिंदी</button>
+        </div>
+        <h1>🌱 ChimerTech Agricultural Assistant</h1>
+        <p id="headerSubtitle">Ask me about any agricultural product!</p>
       </div>
-      <h1>🌱 ChimerTech Agricultural Assistant</h1>
-      <p id="headerSubtitle">Ask me about any agricultural product!</p>
     </div>
 
     <div class="chatbox" id="chat">
@@ -747,14 +931,12 @@
     }
 
     function toggleAutoSpeak() {
-      // If currently speaking, stop it
       if (synthesis.speaking) {
         synthesis.cancel();
         isPaused = false;
         speakerBtn.classList.remove('speaking', 'paused');
       }
       
-      // Toggle auto-speak on/off
       autoSpeak = !autoSpeak;
       speakerBtn.style.opacity = autoSpeak ? '1' : '0.5';
       speakerBtn.textContent = autoSpeak ? '🔊' : '🔇';
@@ -774,56 +956,41 @@
     function speakText(text) {
       if (!autoSpeak || !synthesis) return;
 
-      // Cancel any ongoing speech
       synthesis.cancel();
 
-      // Comprehensive text cleaning
       let cleanText = text
-        // Remove all HTML tags and their content
         .replace(/<style[^>]*>.*?<\/style>/gi, '')
         .replace(/<script[^>]*>.*?<\/script>/gi, '')
         .replace(/<[^>]+>/g, ' ')
-        // Remove ALL emojis and symbols (more comprehensive)
-        .replace(/[\u{1F000}-\u{1FFFF}]/gu, '') // All emoji ranges
-        .replace(/[\u{2600}-\u{27BF}]/gu, '')   // Misc symbols
-        .replace(/[\u{2300}-\u{23FF}]/gu, '')   // Misc Technical
-        .replace(/[\u{2B00}-\u{2BFF}]/gu, '')   // Misc Symbols and Arrows
-        .replace(/[\u{FE00}-\u{FE0F}]/gu, '')   // Variation Selectors
-        .replace(/[\u{200D}]/gu, '')            // Zero Width Joiner
-        // Remove common emoji characters that might slip through
+        .replace(/[\u{1F000}-\u{1FFFF}]/gu, '')
+        .replace(/[\u{2600}-\u{27BF}]/gu, '')
+        .replace(/[\u{2300}-\u{23FF}]/gu, '')
+        .replace(/[\u{2B00}-\u{2BFF}]/gu, '')
+        .replace(/[\u{FE00}-\u{FE0F}]/gu, '')
+        .replace(/[\u{200D}]/gu, '')
         .replace(/[👋🌱💡🎤🔊🔇⚠️📦📝🖼️🔍❌✓✔✗✘]/g, '')
-        // Remove special characters and symbols
         .replace(/[©®™×±§¶†‡•‣℃℉€£¥]/g, '')
-        // Replace multiple dots with single period
         .replace(/\.{2,}/g, '.')
-        // Replace line breaks with periods for better speech flow
         .replace(/<br\s*\/?>/gi, '. ')
         .replace(/\n+/g, '. ')
-        // Clean up punctuation spacing
         .replace(/\s*([.,!?;:])\s*/g, '$1 ')
-        // Remove multiple spaces
         .replace(/\s+/g, ' ')
         .trim();
 
-      // Remove empty sentences
       cleanText = cleanText
         .split('.')
         .filter(s => s.trim().length > 0)
         .join('. ')
         .trim();
 
-      // Add final period if missing
       if (cleanText && !cleanText.match(/[.!?]$/)) {
         cleanText += '.';
       }
 
       if (!cleanText || cleanText.length < 2) return;
 
-      // Create utterance with better settings
       currentUtterance = new SpeechSynthesisUtterance(cleanText);
       currentUtterance.lang = voiceLanguages[currentLanguage];
-      
-      // Set consistent rate for all languages
       currentUtterance.rate = 0.95;
       currentUtterance.pitch = 1;
       currentUtterance.volume = 1;
@@ -848,25 +1015,19 @@
         isPaused = false;
       };
 
-      // Find best voice for the language
       const voices = synthesis.getVoices();
       const langCode = voiceLanguages[currentLanguage];
-      
-      // Try to find exact language match first
       let voice = voices.find(v => v.lang === langCode);
       
-      // If not found, try language prefix match
       if (!voice) {
         const langPrefix = langCode.split('-')[0];
         voice = voices.find(v => v.lang.startsWith(langPrefix));
       }
       
-      // Prefer native/local voices
       if (voice) {
         currentUtterance.voice = voice;
       }
 
-      // Small delay to ensure previous speech is fully cancelled
       setTimeout(() => {
         synthesis.speak(currentUtterance);
       }, 100);
@@ -885,12 +1046,10 @@
       headerSubtitle.textContent = greetings[lang];
       input.placeholder = placeholders[lang];
       
-      // Update speech recognition language if it exists
       if (recognition) {
         recognition.lang = voiceLanguages[lang];
       }
       
-      // Messages in respective languages (both display and speech)
       const messages = {
         en: '🌐 Language switched to English!',
         ta: '🌐 மொழி தமிழுக்கு மாற்றப்பட்டது!',
@@ -904,7 +1063,6 @@
       
       speakText(message);
       
-      // Save preference
       if (window.localStorage) {
         window.localStorage.setItem('preferredLanguage', lang);
       }
@@ -916,9 +1074,8 @@
       const msg = customMessage || input.value.trim();
       if (!msg) return;
 
-      // Check if user is trying to switch language via text
       const msgLower = msg.toLowerCase();
-      if (!customMessage) { // Only check for text-based language switching if not a custom message
+      if (!customMessage) {
         if (msgLower === 'tamil' || msgLower === 'தமிழ்') {
           switchLanguage('ta');
           input.value = '';
@@ -962,12 +1119,10 @@
           headerSubtitle.textContent = greetings[data.language];
           input.placeholder = placeholders[data.language];
           
-          // Update speech recognition language
           if (recognition) {
             recognition.lang = voiceLanguages[data.language];
           }
           
-          // Save preference
           if (window.localStorage) {
             window.localStorage.setItem('preferredLanguage', data.language);
           }
@@ -975,7 +1130,6 @@
 
         if (data.type === 'product') {
           displayProduct(data);
-          // Create a clean speech text for products without any special characters
           const productIntro = currentLanguage === 'ta' ? 'தயாரிப்பு தகவல்' :
                               currentLanguage === 'hi' ? 'उत्पाद की जानकारी' :
                               'Product information';
@@ -1108,16 +1262,13 @@
     }
 
     window.onload = () => {
-      // Load voices first (important for some browsers)
       if (synthesis) {
         synthesis.onvoiceschanged = () => {
           synthesis.getVoices();
         };
-        // Force initial voice load
         synthesis.getVoices();
       }
       
-      // Load saved language preference before initializing speech recognition
       const savedLang = window.localStorage?.getItem('preferredLanguage');
       if (savedLang && ['en', 'ta', 'hi'].includes(savedLang)) {
         currentLanguage = savedLang;
@@ -1127,9 +1278,7 @@
         input.placeholder = placeholders[savedLang];
       }
       
-      // Initialize speech recognition with correct language
       initSpeechRecognition();
-      
       input.focus();
     };
 
